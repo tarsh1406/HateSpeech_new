@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hate Speech Classification</title>
+    <style>
+        /* Your existing styles here */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            background-image: url("/static/images/nohate.jpg"); 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat;
+        }
+        h1 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+            position: absolute;
+            top: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 7px;
+            border-radius: 10px;
+        }
+        .container {
+            background-color: rgba(26, 26, 26, 0.85);
+            padding: 28px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            height: auto;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ffd700;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #333333;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            color: #333333;
+        }
+        .helptext {
+            display: none; /* Hide help text */
+        }
+        input[type="submit"], input[type="button"] {
+            width: 100%;
+            padding: 15px 0;
+            background-color: #ffd700;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+        input[type="submit"]:hover, input[type="button"]:hover {
+            background-color: #bfa600;
+        }
+        .error-message {
+            color: red;
+            margin-bottom: 10px;
+        }
+        .forgot-password {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+            color: #ffd700;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .forgot-password:hover {
+            color: #bfa600;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hate Speech Classification Dashboard</h1>
+    <div class="container">
+        <h2>Login Here</h2>
+        {% if form.non_field_errors %}
+            <div class="error-message">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="error-message">{{ field.errors }}</div>
+                {{ field }}
+            {% endfor %}
+            <input type="submit" value="Login">
+            <input type="button" value="Register" onclick="window.location.href='{% url 'register' %}'">
+        </form>
+        
+    </div>
+</body>
+</html>

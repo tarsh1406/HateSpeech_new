@@ -1,0 +1,347 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background-color: #333;
+            color: #fff;
+            width: 250px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: fixed; 
+            height: 100%; 
+            top: 0; 
+            left: 0; 
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar ul li {
+            margin-bottom: 10px;
+            background-color: rgba(255, 215, 0, 0.65);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .sidebar ul li a {
+            display: block;
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            color: #fff;
+            text-decoration: none;
+        }
+        .sidebar ul li:hover {
+            background-color: rgba(255, 215, 0, 0.8);
+        }
+        .sidebar ul li a:hover {
+            color: #fff;
+        }
+        .content {
+            flex: 1;
+            position: relative;
+            padding: 20px;
+            text-align: center;
+            background-color: #e0e7e8;
+            margin-left: 300px;
+            overflow-y: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #fff; /* Background color for table */
+            border-radius: 8px; /* Rounded corners for table */
+            overflow: hidden; /* Ensure border-radius is applied to the whole table */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow for better appearance */
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd; /* Light grey border */
+        }
+        th {
+            background-color: #cb89ce;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        .comment-table-wrapper {
+            max-height: 400px; /* Set a fixed height for the comment table */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+        .comment-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .comment-table th, .comment-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd; /* Light grey border */
+        }
+        .comment-table th {
+            background-color: #66bbc1;
+            color: white;
+            font-weight: bold;
+        }
+        .comment-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .comment-table tr:hover {
+            background-color: #ddd;
+        }
+        .metrics-info {
+            text-align: left;
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 20;
+        }
+        .training-section {
+            margin: 20px 0;
+        }
+        .training-section h3 {
+            margin-bottom: 10px;
+        }
+        .chart-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    .chart-container img {
+        max-width: 100%;
+        height: auto;
+        margin: 10px;
+        width: 400px; /* Set the desired width */
+    }
+    .formula {
+            background-color: #eef;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1em;
+        }
+        .formula p {
+            margin: 0;
+        }
+        .hate-speech-percentage {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: #d9534f; /* Bootstrap danger color */
+        margin-top: 20px;
+        border: 2px solid #d9534f; /* Border color */
+        padding: 10px; /* Padding inside the box */
+        display: inline-block; /* Make it an inline-block element */
+        border-radius: 5px; /* Optional: Add rounded corners */
+        background-color: #f8d7da; /* Optional: Add a background color */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Navigation</h2>
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'history' %}">History</a></li>
+            <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <h2>Analysis Dashboard</h2>
+        {% if user.is_authenticated %}
+            <p>Welcome, {{ user.username }}!</p>
+        {% endif %}
+        {% if video_details %}
+            <h3>Video Details</h3>
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <td>{{ video_details.title }}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>{{ video_details.description|linebreaks }}</td>
+                </tr>
+                <tr>
+                    <th>Channel</th>
+                    <td>{{ video_details.channelTitle }}</td>
+                </tr>
+                <tr>
+                    <th>Thumbnail</th>
+                    <td><img src="{{ video_details.thumbnails.default.url }}" alt="Thumbnail"></td>
+                </tr>
+            </table>
+        {% endif %}
+        <br>
+    <br>
+        {% if comments %}
+        <h3>Comments {{ video_details.id }}</h3>
+        <div class="comment-table-wrapper">
+            <table class="comment-table">
+                <thead>
+                    <tr>
+                        <th>Comment</th>
+                        <th>SVM</th>
+                        <th>Naive Bayes</th>
+                        <th>Logistic Regression</th>
+                        <th>Random Forest</th>
+                        <th>Is Hate Speech</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for comment in comments %}
+                    <tr>
+                        <td>{{ comment.comment }}</td>
+                        <td>{{ comment.svm }}</td>
+                        <td>{{ comment.naive_bayes }}</td>
+                        <td>{{ comment.logistic_regression }}</td>
+                        <td>{{ comment.random_forest }}</td>
+                        <td>{{ comment.is_hate_speech }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="hate-speech-percentage">Hate Speech Percentage: {{ hate_speech_percentage }}%</p>
+        {% else %}
+            <p>No comments found for this video.</p>
+        {% endif %}
+        <br>
+        <br>
+    <h3>Model Accuracies (0.2 Split)</h3>
+        {% if accuracies %}
+            <canvas id="accuracyChart" width="300" height="100"></canvas>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    fetch("{% url 'chart_data' %}")
+                        .then(response => response.json())
+                        .then(data => {
+                            var ctx = document.getElementById('accuracyChart').getContext('2d');
+                            var trainingAccuracies = [];
+                            var testingAccuracies = [];
+                            var labels = Object.keys(data);
+
+                            labels.forEach(label => {
+                                trainingAccuracies.push(data[label].training * 100);
+                                testingAccuracies.push(data[label].testing * 100);
+                            });
+
+                            var accuracyChart = new Chart(ctx, {
+                                type: 'bar',
+                                data: {
+                                    labels: labels,
+                                    datasets: [
+                                        {
+                                            label: 'Training Accuracy (%)',
+                                            data: trainingAccuracies,
+                                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                            borderColor: 'rgba(54, 162, 235, 1)',
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: 'Testing Accuracy (%)',
+                                            data: testingAccuracies,
+                                            backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                                            borderColor: 'rgba(255, 206, 86, 1)',
+                                            borderWidth: 1
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            max: 100
+                                        }
+                                    }
+                                }
+                            });
+                        });
+                });
+            </script>
+        {% else %}
+            <p>No accuracies available.</p>
+        {% endif %}
+
+            <br>
+            <br>
+        <div class="training-section">
+            <h3>Evaluation Metrics vs Training Size</h3>
+            <div class="chart-container">
+                <div>
+                    <h4>Random Forest</h4>
+                    <img src="{% static 'models/random_forest_evaluation_metrics_graph.png' %}" alt="Random Forest Metrics">
+                </div>
+                <div>
+                    <h4>Logistic Regression</h4>
+                    <img src="{% static 'models/logistic_regression_evaluation_metrics_graph.png' %}" alt="Logistic Regression Metrics">
+                </div>
+                <div>
+                    <h4>Naive Bayes</h4>
+                    <img src="{% static 'models/naive_bayes_evaluation_metrics_graph.png' %}" alt="Naive Bayes Metrics">
+                </div>
+                <div>
+                    <h4>SVM</h4>
+                    <img src="{% static 'models/svm_evaluation_metrics_graph.png' %}" alt="SVM Metrics">
+                </div>
+                <div>
+                    <h4>Accuracy Comparison</h4>
+                    <img src="{% static 'models/accuracy_graph.png' %}" alt="Accuracy Comparison">
+                </div>
+            </div>
+        </div>
+        <br>
+
+        <div class="metrics-info">
+            <h3>Model Evaluation Metrics</h3>
+            <p>Accuracy, precision, recall, and F1-score are common metrics used to evaluate the performance of machine learning models. Here's how they are calculated:</p>
+            <div class="formula">
+                <p><strong>Accuracy:</strong> (TP + TN) / (TP + TN + FP + FN)</p>
+            </div>
+            <div class="formula">
+                <p><strong>Precision:</strong> TP / (TP + FP)</p>
+            </div>
+            <div class="formula">
+                <p><strong>Recall (Sensitivity):</strong> TP / (TP + FN)</p>
+            </div>
+            <div class="formula">
+                <p><strong>F1-Score:</strong> 2 * (Precision * Recall) / (Precision + Recall)</p>
+            </div>
+            <h4>Definitions</h4>
+            <ul>
+                <li><strong>TP (True Positive):</strong> Correctly predicted positive instances.</li>
+                <li><strong>TN (True Negative):</strong> Correctly predicted negative instances.</li>
+                <li><strong>FP (False Positive):</strong> Incorrectly predicted positive instances.</li>
+                <li><strong>FN (False Negative):</strong> Incorrectly predicted negative instances.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

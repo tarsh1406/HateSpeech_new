@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HateSpeechClassifier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background-color: #333;
+            color: #fff;
+            width: 250px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: fixed; /* Fix the sidebar */
+            height: 100%; /* Ensure it takes the full height of the screen */
+            top: 0; /* Start from the top */
+            left: 0; /* Align to the left */
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar ul li {
+            margin-bottom: 10px;
+            background-color: rgba(255, 215, 0, 0.65);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .sidebar ul li a {
+            display: block;
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            color: #fff;
+            text-decoration: none;
+        }
+        .sidebar ul li:hover {
+            background-color: rgba(255, 215, 0, 0.8);
+        }
+        .sidebar ul li a:hover {
+            color: #fff;
+        }
+        .content {
+            flex: 1;
+            position: relative;
+            padding: 20px;
+            text-align: center;
+            background-image: url('/static/images/history2.jpg');
+            background-size: cover;
+            background-position: center;
+            margin-left: 290px;
+            overflow: hidden;
+        }
+        p.no-history {
+            color: black;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        h3 {
+            color: #ffd700;
+            font-size: 30px;
+            margin-bottom: 10px;
+            text-align: center;
+            width: 94%;
+            position: absolute;
+            top: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .table-container {
+            width: 95%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            margin-top: 90px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .delete-btn {
+            color: #fff;
+            background-color: #ff4c4c;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: #ff1a1a;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Navigation</h2>
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'history' %}">History</a></li>
+            <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <h3>History</h3>
+        {% if history %}
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Link</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+                {% for entry in history %}
+                    <tr>
+                        <td>{{ entry.id }}</td>
+                        <td>{{ entry.video_title }}</td>
+                        <td><a href="{% url 'dashboard' %}?youtubeLink={{ entry.video_link }}">{{ entry.video_link }}</a></td>
+                        <td>{{ entry.created_at|date:"F d, Y" }}</td>
+                        <td>
+                            <form method="post" action="{% url 'history' %}" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="delete_id" value="{{ entry.id }}">
+                                <button type="submit" class="delete-btn">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% else %}
+        <div class="no-history">No history available.</div>
+        {% endif %}
+    </div>
+</body>
+</html>
