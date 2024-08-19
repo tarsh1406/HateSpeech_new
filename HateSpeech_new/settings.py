@@ -135,4 +135,4 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # YouTube API Key
-YOUTUBE_API_KEY = 'AIzaSyBtNM-yJuuMO_ZU6gioUP7Ey2iSb6BaFTA'
+YOUTUBE_API_KEY = ''
