@@ -18,7 +18,7 @@ This project applies Natural Language Processing (NLP) techniques, including tok
 Results and Performance  
 The model has achieved an accuracy on the test set, with detailed evaluation metrics available in the results/ directory. Visualization of the classification performance and confusion matrices are also provided.
 
-Future Enhancements
+Future Enhancements  
 Real-time Integration: Implementing real-time classification for live video comment streams.
 Expanded Dataset: Including more diverse and representative data to improve model generalization.
 Advanced Model Architectures: Experimenting with transformer models like BERT for enhanced performance.
