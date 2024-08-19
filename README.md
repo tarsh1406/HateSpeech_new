@@ -1,6 +1,6 @@
-Hate Speech Classification for Online Video Feedback Using Machine Learning Approach
+HATE SPEECH CLASSIFICATION FOR ONLINE VIDEO FEEDBACK USING MACHINE LEARNING APPROACH
 
-Project Overview
+Project Overview  
 This project focuses on detecting and classifying hate speech in online video feedback using machine learning techniques. The feedback data is primarily sourced from YouTube video comments, which are analyzed and categorized as either hate speech or non-hate speech. The system also provides finer classifications into specific categories such as racism, sexism, or religious discrimination. The overall goal is to contribute to a safer and more respectful online community by identifying harmful language in user-generated content.
 
 Key Features
